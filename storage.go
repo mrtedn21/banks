@@ -14,7 +14,7 @@ type Account struct {
 type Storage interface {
 	Insert(a *Account)
 	Get(id int) (Account, error)
-	Update(id int, a Account)
+	Update(id int, a *Account)
 	Delete(id int)
 }
 
@@ -54,9 +54,9 @@ func (s *MemoryStorage) Get(id int) (Account, error) {
 	return account, nil
 }
 
-func (s *MemoryStorage) Update(id int, a Account) {
+func (s *MemoryStorage) Update(id int, a *Account) {
 	s.Lock()
-	s.data[id] = a
+	s.data[id] = *a
 	s.Unlock()
 }
 

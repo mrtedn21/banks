@@ -21,17 +21,12 @@ func NewHandler(storage Storage) *Handler {
 }
 
 func (h *Handler) CreateAccount(c *gin.Context) {
-	var account Account
-
-	if err := c.BindJSON(&account); err != nil {
-		fmt.Printf("failed to bind account: %s\n", err.Error())
-		c.JSON(http.StatusBadRequest, ErrorResponse{
-			Message: err.Error(),
-		})
+	account, err := h.parseAccount(c)
+	if err != nil {
 		return
 	}
 
-	h.storage.Insert(&account)
+	h.storage.Insert(account)
 
 	c.JSON(http.StatusOK, map[string]int{
 		"id": account.Id,
@@ -39,18 +34,10 @@ func (h *Handler) CreateAccount(c *gin.Context) {
 }
 
 func (h *Handler) UpdateAccount(c *gin.Context) {
-	id, err := h.parseId(c)
-	if err != nil {
-		return
-	}
+	id, parse_id_error := h.parseId(c)
+	account, parse_account_error := h.parseAccount(c)
 
-	var account Account
-
-	if err := c.BindJSON(&account); err != nil {
-		fmt.Printf("failed to bind account: %s\n", err.Error())
-		c.JSON(http.StatusBadRequest, ErrorResponse{
-			Message: err.Error(),
-		})
+	if parse_id_error != nil || parse_account_error != nil {
 		return
 	}
 
@@ -104,4 +91,18 @@ func (h *Handler) parseId(c *gin.Context) (int, error) {
 	}
 
 	return id, err
+}
+
+func (h *Handler) parseAccount(c *gin.Context) (*Account, error) {
+	var account Account
+
+	if err := c.BindJSON(&account); err != nil {
+		fmt.Printf("failed to bind account: %s\n", err.Error())
+		c.JSON(http.StatusBadRequest, ErrorResponse{
+			Message: err.Error(),
+		})
+		return &account, err
+	}
+
+	return &account, nil
 }
