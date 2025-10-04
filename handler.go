@@ -39,13 +39,8 @@ func (h *Handler) CreateAccount(c *gin.Context) {
 }
 
 func (h *Handler) UpdateAccount(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
-
+	id, err := h.parseId(c)
 	if err != nil {
-		fmt.Printf("failed to convert id param to int: %s\n", err.Error())
-		c.JSON(http.StatusBadRequest, ErrorResponse{
-			Message: err.Error(),
-		})
 		return
 	}
 
@@ -67,13 +62,8 @@ func (h *Handler) UpdateAccount(c *gin.Context) {
 }
 
 func (h *Handler) GetAccount(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
-
+	id, err := h.parseId(c)
 	if err != nil {
-		fmt.Printf("failed to convert id param to int: %s\n", err.Error())
-		c.JSON(http.StatusBadRequest, ErrorResponse{
-			Message: err.Error(),
-		})
 		return
 	}
 
@@ -90,16 +80,28 @@ func (h *Handler) GetAccount(c *gin.Context) {
 }
 
 func (h *Handler) DeleteAccount(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
+	id, err := h.parseId(c)
 	if err != nil {
-		fmt.Printf("failed to convert id param to int: %s\n", err.Error())
-		c.JSON(http.StatusBadRequest, ErrorResponse{
-			Message: err.Error(),
-		})
 		return
 	}
 
 	h.storage.Delete(id)
 
 	c.String(http.StatusOK, "account deleted")
+}
+
+// help functions
+
+func (h *Handler) parseId(c *gin.Context) (int, error) {
+	id, err := strconv.Atoi(c.Param("id"))
+
+	if err != nil {
+		fmt.Printf("failed to convert id param to int: %s\n", err.Error())
+		c.JSON(http.StatusBadRequest, ErrorResponse{
+			Message: err.Error(),
+		})
+		return id, err
+	}
+
+	return id, err
 }
