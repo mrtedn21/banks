@@ -6,9 +6,9 @@ import (
 )
 
 type Account struct {
-	Id	int        `json:"id"`
-	Number string  `json:"number"`
-	MoneyCount int `json:"money_count"`
+	Id         int    `json:"id"`
+	Number     string `json:"number"`
+	MoneyCount int    `json:"money_count"`
 }
 
 type Storage interface {
@@ -20,13 +20,13 @@ type Storage interface {
 
 type MemoryStorage struct {
 	counter int
-	data map[int]Account
+	data    map[int]Account
 	sync.Mutex
 }
 
 func NewMemoryStorage() *MemoryStorage {
 	return &MemoryStorage{
-		data: make(map[int]Account),
+		data:    make(map[int]Account),
 		counter: 1,
 	}
 }
@@ -37,7 +37,7 @@ func (s *MemoryStorage) Insert(a *Account) {
 	a.Id = s.counter
 	s.data[a.Id] = *a
 
-	s.counter ++
+	s.counter++
 
 	s.Unlock()
 }

@@ -33,7 +33,7 @@ func (h *Handler) CreateAccount(c *gin.Context) {
 
 	h.storage.Insert(&account)
 
-	c.JSON(http.StatusOK, map[string]int {
+	c.JSON(http.StatusOK, map[string]int{
 		"id": account.Id,
 	})
 }
