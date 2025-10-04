@@ -1,14 +1,19 @@
 package main
 
 import (
-    "fmt"
-    "net/http"
+    "github.com/gin-gonic/gin"
 )
 
 func main() {
-    http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-        fmt.Fprint(w, "hello")
-    })
+    memoryStorage := NewMemoryStorage()
+    handler := NewHandler(memoryStorage)
 
-    http.ListenAndServe(":8080", nil)
+    router := gin.Default()
+
+    router.POST("/account", handler.CreateAccount)
+    router.GET("/account/:id", handler.GetAccount)
+    router.PUT("/account/:id", handler.UpdateAccount)
+    router.DELETE("/account/:id", handler.DeleteAccount)
+
+    router.Run()
 }
