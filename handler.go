@@ -54,16 +54,9 @@ func (h *Handler) GetAccount(c *gin.Context) {
 		return
 	}
 
-	account, err := h.storage.Get(id)
-	if err != nil {
-		fmt.Printf("failed to get account %s\n", err.Error())
-		c.JSON(http.StatusBadRequest, ErrorResponse{
-			Message: err.Error(),
-		})
-		return
-	}
-
-	c.JSON(http.StatusOK, account)
+	var account Account
+	Db.First(&account, id)
+	c.JSON(http.StatusOK, gin.H{"data": account})
 }
 
 func (h *Handler) DeleteAccount(c *gin.Context) {

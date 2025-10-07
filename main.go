@@ -5,6 +5,8 @@ import (
 )
 
 func main() {
+	ConnectDatabase()
+
 	memoryStorage := NewMemoryStorage()
 	handler := NewHandler(memoryStorage)
 
