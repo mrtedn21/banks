@@ -55,7 +55,7 @@ func (h *Handler) GetAccount(c *gin.Context) {
 
 	var account Account
 	Db.First(&account, id)
-	c.JSON(http.StatusOK, gin.H{"data": account})
+	c.JSON(http.StatusOK, account)
 }
 
 func (h *Handler) DeleteAccount(c *gin.Context) {
