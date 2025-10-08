@@ -12,12 +12,10 @@ type ErrorResponse struct {
 	Message string `json:"message"`
 }
 
-type Handler struct {
-	storage Storage
-}
+type Handler struct{}
 
-func NewHandler(storage Storage) *Handler {
-	return &Handler{storage: storage}
+func NewHandler() *Handler {
+	return &Handler{}
 }
 
 func (h *Handler) CreateAccount(c *gin.Context) {
@@ -26,7 +24,7 @@ func (h *Handler) CreateAccount(c *gin.Context) {
 		return
 	}
 
-	h.storage.Insert(account)
+	Db.Create(&account)
 
 	c.JSON(http.StatusOK, map[string]int{
 		"id": account.Id,
@@ -36,12 +34,13 @@ func (h *Handler) CreateAccount(c *gin.Context) {
 func (h *Handler) UpdateAccount(c *gin.Context) {
 	id, parse_id_error := h.parseId(c)
 	account, parse_account_error := h.parseAccount(c)
+	account.Id = id
 
 	if parse_id_error != nil || parse_account_error != nil {
 		return
 	}
 
-	h.storage.Update(id, account)
+	Db.Save(&account)
 
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"id": account.Id,
@@ -65,7 +64,7 @@ func (h *Handler) DeleteAccount(c *gin.Context) {
 		return
 	}
 
-	h.storage.Delete(id)
+	Db.Delete(&Account{}, id)
 
 	c.String(http.StatusOK, "account deleted")
 }

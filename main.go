@@ -7,9 +7,7 @@ import (
 func main() {
 	ConnectDatabase()
 
-	memoryStorage := NewMemoryStorage()
-	handler := NewHandler(memoryStorage)
-
+	handler := NewHandler()
 	router := gin.Default()
 
 	router.POST("/account", handler.CreateAccount)
